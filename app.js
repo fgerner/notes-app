@@ -1,3 +1,4 @@
-const fs = require('fs');
-// fs.writeFileSync('notes.txt', 'written by node');
-fs.appendFileSync('notes.txt', '\nwritten by fred');
+const {name, add} = require('./utils');
+
+console.log(add(2, 20));
+console.log(name)
