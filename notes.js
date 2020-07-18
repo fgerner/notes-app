@@ -1,11 +1,24 @@
 const fs = require('fs');
 const chalk = require('chalk');
 
-const getNotes =  () => {
-    return 'Notes...';
+const getNote = (title) => {
+    const notes = loadNotes();
+    const note = notes.find(note => note.title === title);
+    if (note) {
+        console.log(chalk.green("Your note: " + title));
+        console.log(note.body);
+    } else {
+        console.log(chalk.red('No note found'));
+    }
 }
 
-const loadNotes =  () => {
+const listNotes = () => {
+    const list = loadNotes();
+    console.log(chalk.green("Your notes"));
+    list.forEach((note) => console.log(note.title));
+}
+
+const loadNotes = () => {
     try {
         const dataBuffer = fs.readFileSync('notes.json');
         const dataJSON = dataBuffer.toString();
@@ -15,17 +28,15 @@ const loadNotes =  () => {
     }
 }
 
-const saveNotes =  (notes) => {
+const saveNotes = (notes) => {
     const dataJSON = JSON.stringify(notes);
     fs.writeFileSync('notes.json', dataJSON);
 }
 
-const addNote =  (title, body) => {
+const addNote = (title, body) => {
     const notes = loadNotes();
-    const duplicateNotes = notes.filter((note) => {
-        return note.title === title;
-    })
-    if (duplicateNotes.length === 0) {
+    const duplicateNote = notes.find((note) => note.title === title);
+    if (!duplicateNote) {
         notes.push({
             title: title,
             body: body
@@ -36,11 +47,9 @@ const addNote =  (title, body) => {
         console.log(chalk.red.inverse('Already exists'));
     }
 }
-const removeNote =  (title) => {
+const removeNote = (title) => {
     const notes = loadNotes();
-    const remainingNotes = notes.filter((note) => {
-        return note.title !== title;
-    })
+    const remainingNotes = notes.filter((note) => note.title !== title)
     if (remainingNotes.length === notes.length) {
         console.log(chalk.red.inverse('No note found'));
     } else {
@@ -49,4 +58,4 @@ const removeNote =  (title) => {
     }
 }
 
-module.exports = {getNotes: getNotes, addNote: addNote, removeNote: removeNote};
+module.exports = {getNote: getNote, addNote: addNote, removeNote: removeNote, listNotes: listNotes};
